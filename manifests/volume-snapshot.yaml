@@ -1,0 +1,16 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: csi-hostpath-snapclass
+driver: hostpath.csi.k8s.io
+deletionPolicy: Retain
+---
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: mongo-snapshot
+  namespace: demo
+spec:
+  volumeSnapshotClassName: csi-hostpath-snapclass
+  source:
+    persistentVolumeClaimName: mongodb-0

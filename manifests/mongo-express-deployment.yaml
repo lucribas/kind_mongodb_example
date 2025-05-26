@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-express
+  namespace: demo
+spec:
+  selector:
+    app: mongo-express
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+      nodePort: 30000
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-express
+  namespace: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-express
+  template:
+    metadata:
+      labels:
+        app: mongo-express
+    spec:
+      containers:
+        - name: mongo-express
+          image: mongo-express
+          ports:
+            - containerPort: 8081
+          env:
+            # - name: ME_CONFIG_MONGODB_SERVER
+              # value: "mongodb"
+            - name: ME_CONFIG_MONGODB_URL
+              value: "mongodb://root:examplepassword@mongodb:27017/?directConnection=true"
+            #   value: "mongodb://admin:examplepassword@mongodb.demo.svc.cluster.local:27017/?replicaSet=rs0&authSource=admin"
+              # value: "mongodb://admin:examplepassword@mongodb-0.mongodb.demo.svc.cluster.local:27017,mongodb-1.mongodb.demo.svc.cluster.local:27017,mongodb-2.mongodb.demo.svc.cluster.local:27017/?replicaSet=rs0&authSource=admin"
+            - name: ME_CONFIG_MONGODB_ENABLE_ADMIN
+              value: "true"
+            - name: ME_CONFIG_BASICAUTH_USERNAME
+              value: "admin"
+            - name: ME_CONFIG_BASICAUTH_PASSWORD
+              value: "admin"

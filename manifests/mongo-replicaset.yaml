@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+  namespace: demo
+spec:
+  serviceName: mongodb
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+  namespace: demo
+spec:
+  serviceName: mongodb
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: bitnami/mongodb:6.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/mongodb
+          env:
+            - name: MONGODB_REPLICA_SET_NAME
+              value: rs0
+            # - name: MONGODB_REPLICA_SET_MODE
+            #   valueFrom:
+            #     fieldRef:
+            #       fieldPath: metadata.name
+            - name: MONGODB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGODB_ROOT_PASSWORD
+            - name: MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGODB_ROOT_PASSWORD
+            - name: MONGODB_REPLICA_SET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGODB_REPLICA_SET_KEY
+          # envFrom:
+          #   - configMapRef:
+          #       name: mongodb-config
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 2Gi
+        storageClassName: standard
+      containers:
+        - name: mongodb
+          image: bitnami/mongodb:6.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/mongodb
+          env:
+            - name: MONGODB_REPLICA_SET_NAME
+              value: rs0
+            # - name: MONGODB_REPLICA_SET_MODE
+            #   valueFrom:
+            #     fieldRef:
+            #       fieldPath: metadata.name
+            - name: MONGODB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGODB_ROOT_PASSWORD
+            - name: MONGODB_INITIAL_PRIMARY_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGODB_ROOT_PASSWORD
+            - name: MONGODB_REPLICA_SET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGODB_REPLICA_SET_KEY
+          # envFrom:
+          #   - configMapRef:
+          #       name: mongodb-config
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 2Gi
+        storageClassName: standard

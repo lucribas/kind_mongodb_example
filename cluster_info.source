@@ -1,0 +1,24 @@
+
+export KUBECONFIG="$(pwd)/kubeconfig"
+set -x
+
+echo "------------------------------------"
+kubectl get csidriver
+
+echo "------------------------------------"
+kubectl get sc
+
+echo "------------------------------------"
+kubectl get pods -n demo
+
+echo "------------------------------------"
+kubectl get pvc -n demo
+kubectl get pv
+
+echo "------------------------------------"
+kubectl describe pod mongodb-0 -n demo
+
+echo "------------------------------------"
+kubectl logs -n demo mongodb-0
+
+set +x
